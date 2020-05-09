@@ -1,0 +1,24 @@
+slack:
+   token: xoxb-test
+   secret: 6e50
+   addr: ":8080"
+grafana:
+   auth_id: "hoge@example.com"
+   auth_header: "X-Proxy-Email"
+   endpoint: "http://localhost:3000/"
+dashboards:
+   -  name: disk
+      dashboardId: "000000012"
+      dashboardName: alerts-linux-nodes
+      orgId: 1
+      panelId: 1
+   -  name: cpu
+      dashboardId: "000000012"
+      dashboardName: alerts-linux-nodes
+      orgId: 1
+      panelId: 4
+   -  name: memory
+      dashboardId: "000000012"
+      dashboardName: alerts-linux-nodes
+      orgId: 1
+      panelId: 5
