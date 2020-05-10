@@ -13,8 +13,8 @@ import (
 	"github.com/nlopes/slack"
 	"github.com/pkg/errors"
 
-	"github.com/atpons/slack-grafana-image-renderer-picker/pkg/config"
-	"github.com/atpons/slack-grafana-image-renderer-picker/pkg/grafana"
+	"github.com/LifeMemoryTeam/slack-grafana-image-renderer-picker/pkg/config"
+	"github.com/LifeMemoryTeam/slack-grafana-image-renderer-picker/pkg/grafana"
 )
 
 const (

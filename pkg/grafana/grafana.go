@@ -13,7 +13,7 @@ import (
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/pkcs12"
 
-	"github.com/atpons/slack-grafana-image-renderer-picker/pkg/config"
+	"github.com/LifeMemoryTeam/slack-grafana-image-renderer-picker/pkg/config"
 )
 
 type Graph struct {

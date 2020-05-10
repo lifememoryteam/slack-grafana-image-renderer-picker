@@ -4,9 +4,9 @@ import (
 	"log"
 	"os"
 
-	"github.com/atpons/slack-grafana-image-renderer-picker/pkg/config"
-	"github.com/atpons/slack-grafana-image-renderer-picker/pkg/grafana"
-	"github.com/atpons/slack-grafana-image-renderer-picker/pkg/slack"
+	"github.com/LifeMemoryTeam/slack-grafana-image-renderer-picker/pkg/config"
+	"github.com/LifeMemoryTeam/slack-grafana-image-renderer-picker/pkg/grafana"
+	"github.com/LifeMemoryTeam/slack-grafana-image-renderer-picker/pkg/slack"
 )
 
 func main() {

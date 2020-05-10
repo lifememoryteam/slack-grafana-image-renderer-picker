@@ -1,4 +1,4 @@
-module github.com/atpons/slack-grafana-image-renderer-picker
+module github.com/LifeMemoryTeam/slack-grafana-image-renderer-picker
 
 go 1.13
 
