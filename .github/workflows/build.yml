@@ -8,9 +8,9 @@ jobs:
       - name: Docker Build
         run: |
           IMAGE_NAME=grasla:${GITHUB_REF#refs/heads/}
-          docker build . --tag docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE_NAME}
+          docker build . --tag docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE_NAME}:latest
           docker login docker.pkg.github.com --username ${DOCKER_USERNAME} --password ${DOCKER_PASSWORD}
-          docker push docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE_NAME}
+          docker push docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE_NAME}:latest
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
