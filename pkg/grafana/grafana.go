@@ -2,12 +2,16 @@ package grafana
 
 import (
 	"bytes"
+	"crypto/tls"
+	"crypto/x509"
+	"encoding/pem"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"path"
 
 	"github.com/pkg/errors"
+	"golang.org/x/crypto/pkcs12"
 
 	"github.com/atpons/slack-grafana-image-renderer-picker/pkg/config"
 )
@@ -24,12 +28,10 @@ type Client struct {
 	client     *http.Client
 }
 
-func NewClient(endpoint, authHeader, authId string) *Client {
+func NewClient(endpoint string) *Client {
 	return &Client{
-		endpoint:   endpoint,
-		authHeader: authHeader,
-		authId:     authId,
-		client:     &http.Client{},
+		endpoint: endpoint,
+		client:   &http.Client{},
 	}
 }
 
@@ -70,6 +72,40 @@ func OrgId(orgid string) Option {
 		v.Add("orgId", orgid)
 		return v
 	}
+}
+
+func (c *Client) LoadP12(keyPath, password string) error {
+	fb, err := ioutil.ReadFile(keyPath)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
+	b, err := pkcs12.ToPEM(fb, password)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
+	if len(b) < 3 {
+		return errors.New("p12 key needs 3 fields")
+	}
+
+	cert, err := tls.X509KeyPair(pem.EncodeToMemory(b[0]), pem.EncodeToMemory(b[2]))
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
+	caCertPool, _ := x509.SystemCertPool()
+	caCertPool.AppendCertsFromPEM(b[1].Bytes)
+
+	tlsConfig := &tls.Config{
+		Certificates: []tls.Certificate{cert},
+		RootCAs:      caCertPool,
+	}
+	tlsConfig.BuildNameToCertificate()
+	transport := &http.Transport{TLSClientConfig: tlsConfig}
+
+	c.client.Transport = transport
+	return nil
 }
 
 func (c *Client) GetDsolo(name string, opts ...Option) (*Graph, error) {

@@ -4,8 +4,8 @@ slack:
    addr: ":8080"
 grafana:
    auth_id: "hoge@example.com"
-   auth_header: "X-Proxy-Email"
-   endpoint: "http://localhost:3000/"
+   use_client_auth: true
+   client_auth_p12: "/ssl/key.p12"
 dashboards:
    -  name: disk
       dashboardId: "000000012"

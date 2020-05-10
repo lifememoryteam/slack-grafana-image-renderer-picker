@@ -10,7 +10,6 @@ import (
 
 var Global *Config
 
-
 func init() {
 	graph = make(map[string]Dashboard, 0)
 }
@@ -22,19 +21,19 @@ type Config struct {
 		Addr   string `yaml:"addr"`
 	} `yaml:"slack"`
 	Grafana struct {
-		AuthID   string `yaml:"auth_id"`
-		AuthHeader   string `yaml:"auth_header"`
-		Endpoint string `yaml:"endpoint"`
+		UseClientAuth bool   `yaml:"use_client_auth"`
+		ClientAuthP12 string `yaml:"client_auth_p12"`
+		Endpoint      string `yaml:"endpoint"`
 	} `yaml:"grafana"`
 	Dashboards []Dashboard `yaml:"dashboards"`
 }
 
 type Dashboard struct {
 	Name          string `yaml:"name"`
-	DashboardID   string    `yaml:"dashboardId"`
+	DashboardID   string `yaml:"dashboardId"`
 	DashboardName string `yaml:"dashboardName"`
-	OrgID         string    `yaml:"orgId"`
-	PanelID       string    `yaml:"panelId"`
+	OrgID         string `yaml:"orgId"`
+	PanelID       string `yaml:"panelId"`
 }
 
 var graph map[string]Dashboard
