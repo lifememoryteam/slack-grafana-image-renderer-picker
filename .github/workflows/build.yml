@@ -1,24 +1,11 @@
-name: Docker
-on: [push]
+name: Docker Package (master)
+on:
+  push:
+    branches:
+      - master
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    if: github.ref != 'refs/heads/master'
-    steps:
-      - uses: actions/checkout@v1
-      - name: Docker Build
-        run: |
-          IMAGE_NAME=grasla
-          IMAGE_TAG=${GITHUB_REF#refs/heads/}
-          docker build . --tag docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}
-          docker login docker.pkg.github.com --username ${DOCKER_USERNAME} --password ${DOCKER_PASSWORD}
-          docker push docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
   latest:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master'
     steps:
       - uses: actions/checkout@v1
       - name: Docker Build with bump up tag
