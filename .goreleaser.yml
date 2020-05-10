@@ -19,8 +19,13 @@ archives:
       windows: windows
       386: i386
       amd64: x86_64
+    wrap_in_directory: true
     format_overrides:
       - goos: windows
         format: zip
+    files:
+      - LICENSE
+      - CREDITS
+      - config.yaml
 release:
   prerelease: auto
