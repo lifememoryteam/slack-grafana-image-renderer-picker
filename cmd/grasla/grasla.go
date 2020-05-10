@@ -21,6 +21,10 @@ func main() {
 			panic(err)
 		}
 	}
+	apiKey := os.Getenv("GRAFANA_API_KEY")
+	if apiKey != "" {
+		g.SetAPIKey(apiKey)
+	}
 	server := slack.NewSlackServer(g, config.Global.Slack.Token, config.Global.Slack.Secret, config.Global.Slack.Addr)
 	if err := server.Start(); err != nil {
 		panic(err)

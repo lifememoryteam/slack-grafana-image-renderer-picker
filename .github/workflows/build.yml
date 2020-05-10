@@ -1,0 +1,16 @@
+name: Docker
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Docker Build
+        run: |
+          IMAGE_NAME=grasla:${GITHUB_REF#refs/heads/}
+          docker build . --tag docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE_NAME}
+          docker login docker.pkg.github.com --username ${DOCKER_USERNAME} --password ${DOCKER_PASSWORD}
+          docker push docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE_NAME}
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}

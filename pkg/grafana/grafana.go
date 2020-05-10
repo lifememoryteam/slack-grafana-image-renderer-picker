@@ -5,6 +5,7 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"encoding/pem"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -22,10 +23,9 @@ type Graph struct {
 }
 
 type Client struct {
-	endpoint   string
-	authId     string
-	authHeader string
-	client     *http.Client
+	endpoint string
+	apiKey   string
+	client   *http.Client
 }
 
 func NewClient(endpoint string) *Client {
@@ -33,6 +33,10 @@ func NewClient(endpoint string) *Client {
 		endpoint: endpoint,
 		client:   &http.Client{},
 	}
+}
+
+func (c *Client) SetAPIKey(apiKey string) {
+	c.apiKey = apiKey
 }
 
 type DsoloParams struct {
@@ -43,6 +47,15 @@ type DsoloParams struct {
 }
 
 type Request http.Request
+
+func (c *Client) NewRequest(URL *url.URL, method string) *Request {
+	req := Request{URL: URL, Method: method}
+	req.Header = make(http.Header)
+	if c.apiKey != "" {
+		req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", c.apiKey))
+	}
+	return &req
+}
 
 type Option func(*url.Values) *url.Values
 
@@ -126,11 +139,7 @@ func (c *Client) getDsolo(dashboardId, dashboardName string, option ...Option) (
 		return nil, errors.WithStack(err)
 	}
 	endpoint.Path = path.Join("/render/d-solo/", dashboardId, "/", dashboardName)
-	req := &Request{URL: endpoint, Method: http.MethodGet}
-	if c.authHeader != "" {
-		req.Header = make(http.Header)
-		req.Header.Set(c.authHeader, c.authId)
-	}
+	req := c.NewRequest(endpoint, http.MethodGet)
 	params := req.URL.Query()
 	for _, v := range option {
 		v(&params)

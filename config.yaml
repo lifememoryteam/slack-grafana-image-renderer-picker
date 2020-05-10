@@ -3,7 +3,7 @@ slack:
    secret: 6e50
    addr: ":8080"
 grafana:
-   auth_id: "hoge@example.com"
+   endpoint: "http://localhost:3000/"
    use_client_auth: true
    client_auth_p12: "/ssl/key.p12"
 dashboards:
