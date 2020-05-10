@@ -7,12 +7,14 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strings"
 	"time"
+
+	"github.com/nlopes/slack"
+	"github.com/pkg/errors"
 
 	"github.com/atpons/slack-grafana-image-renderer-picker/pkg/config"
 	"github.com/atpons/slack-grafana-image-renderer-picker/pkg/grafana"
-	"github.com/nlopes/slack"
-	"github.com/pkg/errors"
 )
 
 const (
@@ -72,19 +74,22 @@ func (s *Slack) slashHandler(w http.ResponseWriter, r *http.Request) {
 
 	switch slackRes.Command {
 	case InvokeSlackGrafanaImageRenderCommand:
-		log.Printf("%s", slackRes.Text)
-		if err != nil {
-			log.Println(err)
-			w.WriteHeader(http.StatusInternalServerError)
-			return
+		args := strings.Split(slackRes.Text, " ")
+		var from string
+		if len(args) >= 2 {
+			from, err = grafana.ParseTimeRange(args[1])
+			if err != nil {
+				s.responseWithMessage("time range is invalid", w)
+				return
+			}
 		}
-		params := &slack.Msg{}
-		if _, err := config.GetDashboard(slackRes.Text); err != nil {
-			params.Text = "no graph"
+
+		if _, err := config.GetDashboard(args[0]); err != nil {
+			s.responseWithMessage("no graph", w)
+			return
 		} else {
-			params.Text = "ok, let's take graph..."
 			go func() {
-				graph, err := s.grafana.GetDsolo(slackRes.Text)
+				graph, err := s.getGraphDsolo(args[0], from)
 				if err != nil {
 					log.Println(err)
 					return
@@ -93,15 +98,29 @@ func (s *Slack) slashHandler(w http.ResponseWriter, r *http.Request) {
 					log.Println(err)
 				}
 			}()
+			s.responseWithMessage("taking graph...", w)
 		}
-		b, err := json.Marshal(params)
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-		w.Header().Set("Content-Type", "application/json")
-		w.Write(b)
+
 	}
+}
+
+func (s *Slack) getGraphDsolo(graphName, from string) (*grafana.Graph, error) {
+	if from == "" {
+		return s.grafana.GetDsolo(graphName)
+	}
+	return s.grafana.GetDsolo(graphName, grafana.From(from), grafana.To("now"))
+}
+
+func (s *Slack) responseWithMessage(message string, w http.ResponseWriter) {
+	params := &slack.Msg{}
+	params.Text = message
+	b, err := json.Marshal(params)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(b)
 }
 
 func (s *Slack) uploadGraph(channel string, graph *grafana.Graph) error {

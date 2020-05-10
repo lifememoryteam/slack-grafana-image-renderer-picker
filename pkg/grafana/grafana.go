@@ -7,8 +7,9 @@ import (
 	"net/url"
 	"path"
 
-	"github.com/atpons/slack-grafana-image-renderer-picker/pkg/config"
 	"github.com/pkg/errors"
+
+	"github.com/atpons/slack-grafana-image-renderer-picker/pkg/config"
 )
 
 type Graph struct {
@@ -71,12 +72,16 @@ func OrgId(orgid string) Option {
 	}
 }
 
-func (c *Client) GetDsolo(name string) (*Graph, error) {
+func (c *Client) GetDsolo(name string, opts ...Option) (*Graph, error) {
 	d, err := config.GetDashboard(name)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
-	return c.getDsolo(d.DashboardID, d.DashboardName, OrgId(d.OrgID), PanelId(d.PanelID))
+	o := []Option{OrgId(d.OrgID), PanelId(d.PanelID)}
+	for _, v := range opts {
+		o = append(o, v)
+	}
+	return c.getDsolo(d.DashboardID, d.DashboardName, o...)
 }
 
 func (c *Client) getDsolo(dashboardId, dashboardName string, option ...Option) (*Graph, error) {
