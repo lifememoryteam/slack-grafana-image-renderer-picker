@@ -2,6 +2,8 @@
 
 Pick graph with Slack Slash Command from Grafana Image Renderer and post graph image to Slack.
 
+![](https://lifememoryteam.github.io/slack-grafana-image-renderer-picker/grasla.gif)
+
 ### Dependencies
 
 - Grafana
@@ -9,7 +11,15 @@ Pick graph with Slack Slash Command from Grafana Image Renderer and post graph i
     - If you use Auth Proxy Authentication, the reverse proxy must support client certificate authentication.
 - [Grafana Image Renderer](https://grafana.com/grafana/plugins/grafana-image-renderer)
   - Grafana needs installed this plugin.
-  
+
+### Deployment
+
+Please read [docker-compose.yml](https://github.com/lifememoryteam/slack-grafana-image-renderer-picker/blob/master/docker-compose.yml)
+
+- Docker image from [Packages](https://github.com/lifememoryteam/slack-grafana-image-renderer-picker/packages)
+- Get binary from [Releases](https://github.com/lifememoryteam/slack-grafana-image-renderer-picker/releases)
+
+
 ### Configuration
 
 #### Basic
