@@ -26,3 +26,6 @@ jobs:
           IMAGE_TAG=${GITHUB_REF#refs/heads/}
           docker tag docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG} docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE_NAME}:latest
           docker push docker.pkg.github.com/${GITHUB_REPOSITORY}/${IMAGE_NAME}:latest
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
