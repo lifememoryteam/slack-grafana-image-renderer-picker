@@ -1,6 +1,6 @@
 module github.com/LifeMemoryTeam/slack-grafana-image-renderer-picker
 
-go 1.13
+go 1.19
 
 require (
 	github.com/goccy/go-yaml v1.4.3
